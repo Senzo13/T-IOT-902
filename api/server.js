@@ -6,6 +6,11 @@ const port = 3062;
 
 app.use(bodyParser.json());
 
+// Route pour vérifier si l'application est en vie
+app.get("/health", (req, res) => {
+  res.status(200).send("Server is alive and well!");
+});
+
 app.post("/ttn-webhook", (req, res) => {
   console.log("Received data from TTN:");
   console.log(req.body);
