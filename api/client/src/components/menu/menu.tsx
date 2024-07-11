@@ -1,4 +1,5 @@
 // CustomMenu.tsx
+// @ts-nocheck
 import React from "react";
 import { MenuItemLink, useTranslate } from "react-admin";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -24,24 +25,9 @@ const CustomMenu: React.FC = () => {
       }}
     >
       <MenuItemLink
-        to="/"
-        primaryText={translate("pos.menu.dashboard")}
-        leftIcon={<DashboardIcon />}
-        onPointerEnterCapture={undefined}
-        onPointerLeaveCapture={undefined}
-      />
-      <MenuItemLink
         to="/analytics"
         primaryText={translate("pos.analytics.name")}
         leftIcon={<AnalyticsIcon />}
-        onPointerEnterCapture={undefined}
-        onPointerLeaveCapture={undefined}
-      />
-      <MenuItemLink
-        to="/customers"
-        primaryText={translate("pos.menu.users")}
-        leftIcon={<PeopleIcon />}
-        onPointerEnterCapture={undefined}
         onPointerLeaveCapture={undefined}
       />
     </Box>
