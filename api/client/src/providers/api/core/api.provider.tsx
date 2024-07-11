@@ -16,18 +16,15 @@ class ApiProvider {
   }
 
   static fetchData = async (url: string, requireAuth = true) => {
-    try {
-      const headers = ApiProvider.createHeaders(requireAuth);
-      const response = await axios.get(
-        `${LeafLineProvider.API_ENDPOINT}/${url}`,
-        {
-          headers,
-        }
-      );
-      return response.data;
-    } catch (error) {
-      return error.response.data;
-    }
+    const headers = ApiProvider.createHeaders(requireAuth);
+    const response = await axios.get(
+      `${LeafLineProvider.API_ENDPOINT}/${url}`,
+      {
+        headers,
+      }
+    );
+    console.info("RESPONSE DATA", response);
+    return response.data;
   };
 
   static fetchDataBlob = async (url: string, requireAuth = true) => {
