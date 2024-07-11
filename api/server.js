@@ -3,6 +3,7 @@ const http = require("http");
 const https = require("https");
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const app = express();
 const port = 3062;
@@ -34,6 +35,12 @@ if (envInfo.version === "production" || envInfo.version === "test") {
   server = http.createServer(app);
 }
 
+// Configurer CORS pour accepter les requêtes depuis le port 5162
+const corsOptions = {
+  origin: ["http://localhost:5173", "https://localhost:5173"],
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Route pour vérifier si l'application est en vie
