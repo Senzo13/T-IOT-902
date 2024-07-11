@@ -1,0 +1,75 @@
+####################
+# Setup variables #
+
+image: node:latest
+
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - build
+  - auto_tag
+  - release
+  - deploy
+
+variables:
+  DOCKER_REGISTRY: $DOCKER_REGISTRY
+  DOCKER_USER: $DOCKER_USER
+  DOCKER_PASSWORD: $DOCKER_PASSWORD
+  IMAGE_TAG: $CI_COMMIT_TAG
+  GITLAB_API_TOKEN: $GITLAB_API_TOKEN
+
+####################
+# Base
+
+build:
+  stage: build
+  cache:
+    key: "${CI_COMMIT_REF_SLUG}"
+    paths:
+      - node_modules/
+  script:
+    - echo "Building project..."
+    - npm install
+  only:
+    - main
+
+auto_tag:
+  stage: auto_tag
+  script:
+    - chmod +x ./docker/auto-tag.sh
+    - ./docker/auto-tag.sh
+  only:
+    - main
+
+deploy_prod:
+  stage: deploy
+  image: docker:latest
+  services:
+    - name: docker:dind
+      alias: docker
+  before_script:
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+  script:
+    - echo "Deploying to production..."
+    - docker build -t $DOCKER_REGISTRY:$IMAGE_TAG .
+    - docker push $DOCKER_REGISTRY:$IMAGE_TAG
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: on_success
+
+create_release:
+  stage: release
+  image: curlimages/curl:latest
+  script:
+    - >
+      curl --request POST
+      --header "PRIVATE-TOKEN: $GITLAB_API_TOKEN"
+      --data "name=Leafline release $CI_COMMIT_TAG"
+      --data "tag_name=$CI_COMMIT_TAG"
+      --data "description=Leafline release for $CI_COMMIT_TAG"
+      "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/releases"
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: on_success

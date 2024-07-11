@@ -1,6 +1,7 @@
 #include "heltec.h"
 
-int dustSensorPin = 36;
+int dustSensorPin = 37;
+int iled = 17;
 
 void setup() {
     Serial.begin(115200);
@@ -23,11 +24,15 @@ void setup() {
 
     // Configurer la broche du capteur de poussière
     pinMode(dustSensorPin, INPUT);
+    pinMode(iled, OUTPUT);
+
+    digitalWrite(iled, HIGH);
 }
 
 void loop() {
     // Lire la valeur du capteur de poussière
     int dustValue = analogRead(dustSensorPin);
+
 
     // Afficher la valeur lue sur le moniteur série
     Serial.print("Dust Sensor Value: ");

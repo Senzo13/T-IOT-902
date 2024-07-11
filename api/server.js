@@ -41,13 +41,54 @@ app.get("/health", (req, res) => {
   res.status(200).send("Server is alive and well!");
 });
 
-app.post("/ttn-webhook", (req, res) => {
-  console.log("Received data from TTN:");
-  console.log(req.body);
+// Route pour simuler les données des capteurs
+app.get("/simulate-sensor-data", (req, res) => {
+  const simulatedData = {
+    "LILYGO_TTGO_T-Beam_V1.1_ESP32_LORA": {
+      wifi: Math.random() > 0.5,
+      bluetooth: Math.random() > 0.5,
+      lora: Math.random() > 0.5,
+      gps: {
+        latitude: (Math.random() * 180 - 90).toFixed(6),
+        longitude: (Math.random() * 360 - 180).toFixed(6),
+      },
+      battery: (Math.random() * 100).toFixed(2) + "%",
+    },
+    "GY-BME280": {
+      temperature: (Math.random() * 35 + 5).toFixed(2) + "°C",
+      humidity: (Math.random() * 100).toFixed(2) + "%",
+      pressure: (Math.random() * 20 + 980).toFixed(2) + "hPa",
+    },
+    SPH0645_I2S_MEMS: {
+      soundLevel: (Math.random() * 100).toFixed(2) + "dB",
+    },
+    Heltec_WiFi_LoRa_32_V3: {
+      wifi: Math.random() > 0.5,
+      bluetooth: Math.random() > 0.5,
+      lora: Math.random() > 0.5,
+      display: "OK",
+    },
+    Sony_18650_VTC6: {
+      battery: (Math.random() * 100).toFixed(2) + "%",
+    },
+    Waveshare_Dust_Sensor: {
+      dustDensity: (Math.random() * 500).toFixed(2) + "µg/m³",
+    },
+  };
 
-  // Traitez les données ici (par exemple, les enregistrer dans une base de données)
+  res.status(200).json(simulatedData);
+});
 
-  res.status(200).send("Data received");
+// Route pour simuler une connexion utilisateur
+app.post("/auth", (req, res) => {
+  const { username, password } = req.body;
+
+  // Simuler une validation des informations d'identification
+  if (username === "admin" && password === "password") {
+    res.status(200).json(true);
+  } else {
+    res.status(401).json(false);
+  }
 });
 
 server.listen(port, () => {
